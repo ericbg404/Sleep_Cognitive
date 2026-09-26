@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Previsão de Desempenho Cognitivo · Sono</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #0c1220;
+    --bg-deep: #070b14;
+    --panel: #131c30;
+    --panel-2: #1a2540;
+    --border: rgba(255,255,255,0.08);
+    --text: #eef1fa;
+    --text-muted: #8d97b3;
+    --text-faint: #5c6885;
+    --dawn: #f5b942;
+    --dawn-soft: rgba(245, 185, 66, 0.16);
+    --teal: #55d8c1;
+    --coral: #f0705c;
+    --radius: 18px;
+  }
+
+  *{ box-sizing: border-box; }
+
+  html, body{
+    margin: 0;
+    padding: 0;
+    background: var(--bg-deep);
+    color: var(--text);
+    font-family: 'Inter', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  body{
+    background:
+      radial-gradient(1200px 560px at 12% -10%, rgba(245,185,66,0.10), transparent 60%),
+      radial-gradient(900px 500px at 100% 0%, rgba(85,216,193,0.08), transparent 55%),
+      var(--bg-deep);
+    min-height: 100vh;
+  }
+
+  .wrap{
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 56px 28px 80px;
+  }
+
+  header.page-head{
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 24px;
+    margin-bottom: 44px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 28px;
+  }
+
+  .page-head .mark{
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .mark svg{ display:block; }
+
+  .page-head h1{
+    font-family: 'Fraunces', serif;
+    font-optical-sizing: auto;
+    font-weight: 500;
+    font-size: 1.5rem;
+    margin: 0;
+    line-height: 1.2;
+  }
+
+  .page-head p{
+    margin: 4px 0 0;
+    color: var(--text-muted);
+    font-size: 0.92rem;
+    max-width: 30ch;
+  }
+
+  .hero{
+    margin-bottom: 40px;
+  }
+
+  .hero h2{
+    font-family: 'Fraunces', serif;
+    font-weight: 400;
+    font-size: clamp(2rem, 4vw, 3rem);
+    line-height: 1.12;
+    margin: 0 0 14px;
+    max-width: 18ch;
+  }
+
+  .hero h2 em{
+    font-style: italic;
+    color: var(--dawn);
+  }
+
+  .hero p{
+    color: var(--text-muted);
+    font-size: 1.02rem;
+    max-width: 56ch;
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  .grid{
+    display: grid;
+    grid-template-columns: 1.05fr 0.95fr;
+    gap: 24px;
+    align-items: start;
+  }
+
+  @media (max-width: 900px){
+    .grid{ grid-template-columns: 1fr; }
+  }
+
+  .panel{
+    background: linear-gradient(180deg, var(--panel), var(--panel-2));
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 32px;
+  }
+
+  .panel h3{
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 1.15rem;
+    margin: 0 0 6px;
+  }
+
+  .panel .sub{
+    color: var(--text-muted);
+    font-size: 0.88rem;
+    margin: 0 0 26px;
+  }
+
+  .field{
+    margin-bottom: 22px;
+  }
+
+  .field:last-of-type{ margin-bottom: 0; }
+
+  .field-label{
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 10px;
+    font-size: 0.88rem;
+    color: var(--text);
+  }
+
+  .field-label .val{
+    font-variant-numeric: tabular-nums;
+    color: var(--dawn);
+    font-weight: 600;
+  }
+
+  .field-hint{
+    color: var(--text-faint);
+    font-size: 0.76rem;
+    margin-top: 6px;
+  }
+
+  .field-hint strong{
+    color: var(--dawn);
+    font-weight: 600;
+  }
+
+  input[type="range"]{
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 6px;
+    border-radius: 3px;
+    background: linear-gradient(90deg, var(--dawn) var(--fill, 50%), rgba(255,255,255,0.08) var(--fill, 50%));
+    outline: none;
+    cursor: pointer;
+  }
+
+  input[type="range"]::-webkit-slider-thumb{
+    -webkit-appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--dawn);
+    border: 3px solid var(--bg-deep);
+    box-shadow: 0 0 0 1px rgba(245,185,66,0.4);
+    cursor: pointer;
+  }
+
+  input[type="range"]::-moz-range-thumb{
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--dawn);
+    border: 3px solid var(--bg-deep);
+    cursor: pointer;
+  }
+
+  select{
+    width: 100%;
+    padding: 12px 14px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    color: var(--text);
+    border-radius: 10px;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.92rem;
+    outline: none;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='9' viewBox='0 0 14 9'%3E%3Cpath d='M1 1L7 7L13 1' stroke='%238d97b3' stroke-width='1.6' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+  }
+
+  select:focus, input[type="range"]:focus-visible{
+    box-shadow: 0 0 0 2px var(--dawn-soft);
+  }
+
+  .toggle-row{
+    display: flex;
+    gap: 10px;
+  }
+
+  .toggle-btn{
+    flex: 1;
+    padding: 12px 14px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    border-radius: 10px;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: border-color .15s, color .15s, background .15s;
+  }
+
+  .toggle-btn.active{
+    background: var(--dawn-soft);
+    border-color: var(--dawn);
+    color: var(--dawn);
+  }
+
+  .submit-btn{
+    margin-top: 30px;
+    width: 100%;
+    padding: 15px;
+    border-radius: 12px;
+    border: none;
+    background: var(--dawn);
+    color: #241705;
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: 0.96rem;
+    cursor: pointer;
+    transition: transform .12s ease, box-shadow .12s ease;
+  }
+
+  .submit-btn:hover{ transform: translateY(-1px); box-shadow: 0 10px 24px rgba(245,185,66,0.22); }
+  .submit-btn:disabled{ opacity: 0.55; cursor: progress; transform: none; box-shadow: none; }
+
+  .status-msg{
+    margin-top: 14px;
+    font-size: 0.82rem;
+    color: var(--coral);
+    display: none;
+  }
+
+  .status-msg.show{ display: block; }
+
+  /* ---- result panel ---- */
+  .result-empty{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--text-faint);
+  }
+
+  .result-empty svg{ margin-bottom: 18px; opacity: 0.6; }
+
+  .result-empty p{
+    max-width: 30ch;
+    font-size: 0.9rem;
+    line-height: 1.5;
+    margin: 0;
+  }
+
+  .gauge-wrap{
+    display: none;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .gauge-wrap.show{ display: flex; }
+
+  .gauge-score{
+    font-family: 'Fraunces', serif;
+    font-size: 3.4rem;
+    font-weight: 600;
+    margin-top: -8px;
+    line-height: 1;
+  }
+
+  .gauge-caption{
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    margin-top: 6px;
+    margin-bottom: 30px;
+  }
+
+  .factors{
+    width: 100%;
+  }
+
+  .factors h4{
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 1rem;
+    margin: 0 0 16px;
+    color: var(--text);
+  }
+
+  .factor-row{
+    margin-bottom: 14px;
+  }
+
+  .factor-top{
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.84rem;
+    margin-bottom: 6px;
+  }
+
+  .factor-top .name{ color: var(--text); }
+  .factor-top .amt{ font-variant-numeric: tabular-nums; font-weight: 600; }
+  .amt.pos{ color: var(--teal); }
+  .amt.neg{ color: var(--coral); }
+
+  .factor-bar-track{
+    height: 6px;
+    border-radius: 3px;
+    background: rgba(255,255,255,0.06);
+    overflow: hidden;
+    position: relative;
+  }
+
+  .factor-bar-fill{
+    height: 100%;
+    border-radius: 3px;
+    width: 0%;
+    transition: width .6s cubic-bezier(.22,1,.36,1);
+  }
+
+  .factor-bar-fill.pos{ background: var(--teal); }
+  .factor-bar-fill.neg{ background: var(--coral); }
+
+  footer{
+    margin-top: 52px;
+    padding-top: 22px;
+    border-top: 1px solid var(--border);
+    color: var(--text-faint);
+    font-size: 0.78rem;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="page-head">
+    <div class="mark">
+      <svg width="34" height="34" viewBox="0 0 34 34" fill="none">
+        <circle cx="17" cy="17" r="16" stroke="#f5b942" stroke-width="1.4" opacity="0.35"/>
+        <path d="M22 11.5C20.6 10.3 18.9 9.6 17 9.6c-4.1 0-7.4 3.3-7.4 7.4s3.3 7.4 7.4 7.4c1.9 0 3.6-.7 5-1.9-1 .3-2 .5-3.1.5-3.9 0-7-3.1-7-7s3.1-7 7-7c1.1 0 2.1.2 3.1.5z" fill="#f5b942"/>
+      </svg>
+      <div>
+        <h1>Ciclo Certo</h1>
+      </div>
+    </div>
+    <p>Um MLP treinado sobre hábitos de sono, estima como sua noite influencia o desempenho cognitivo do dia seguinte.</p>
+  </header>
+
+  <div class="hero">
+    <h2>Como foi a sua <em>última noite</em>?</h2>
+    <p>Informe os detalhes do seu sono e estilo de vida recente. O modelo calcula uma nota de desempenho cognitivo prevista e aponta quais fatores mais pesaram para o seu resultado específico — não uma média geral da população.</p>
+  </div>
+
+  <div class="grid">
+
+    <!-- FORM -->
+    <section class="panel">
+      <h3>Sua noite, em números</h3>
+      <p class="sub">Ajuste os campos abaixo com a maior precisão que puder.</p>
+
+      <form id="predict-form">
+
+        <div class="field">
+          <div class="field-label">
+            <span>Duração do sono</span>
+            <span class="val"><span id="val-sleep_duration_hrs">7.0</span> h</span>
+          </div>
+          <input type="range" id="sleep_duration_hrs" min="3" max="11" step="0.1" value="7">
+        </div>
+
+        <div class="field">
+          <div class="field-label"><span>Exercitou-se ontem?</span></div>
+          <div class="toggle-row" id="exercise_day_toggle">
+            <button type="button" class="toggle-btn" data-val="1">Sim</button>
+            <button type="button" class="toggle-btn active" data-val="0">Não</button>
+          </div>
+        </div>
+
+        <div class="field">
+          <div class="field-label">
+            <span>Tempo para pegar no sono</span>
+            <span class="val"><span id="val-sleep_latency_mins">20</span> min</span>
+          </div>
+          <input type="range" id="sleep_latency_mins" min="0" max="90" step="1" value="20">
+        </div>
+
+        <div class="field">
+          <div class="field-label">
+            <span>Despertares durante a noite</span>
+            <span class="val"><span id="val-wake_episodes_per_night">1</span>x</span>
+          </div>
+          <input type="range" id="wake_episodes_per_night" min="0" max="8" step="1" value="1">
+        </div>
+
+        <div class="field">
+          <div class="field-label"><span>Bebeu álcool ontem?</span></div>
+          <div class="toggle-row" id="alcohol_yn_toggle">
+            <button type="button" class="toggle-btn" data-val="1">Sim</button>
+            <button type="button" class="toggle-btn active" data-val="0">Não</button>
+          </div>
+
+          <div id="alcohol-details" style="display:none; margin-top:18px;">
+            <div class="field-label"><span>Tipo de bebida</span></div>
+            <div class="toggle-row" id="alcohol_type_toggle">
+              <button type="button" class="toggle-btn active" data-val="cerveja">Cerveja</button>
+              <button type="button" class="toggle-btn" data-val="vinho">Vinho</button>
+              <button type="button" class="toggle-btn" data-val="destilado">Destilado</button>
+            </div>
+
+            <div class="field-label" style="margin-top:18px;">
+              <span>Quantidade</span>
+              <span class="val"><span id="val-alcohol_ml">350</span> ml</span>
+            </div>
+            <input type="range" id="alcohol_ml" min="0" max="1000" step="10" value="350">
+            <div class="field-hint">≈ <strong id="val-alcohol_units">1.0</strong> unidade(s) de álcool antes de dormir (cálculo aproximado)</div>
+          </div>
+        </div>
+
+        <div class="field">
+          <div class="field-label">
+            <span>Peso</span>
+            <span class="val"><span id="val-peso_kg">70</span> kg</span>
+          </div>
+          <input type="range" id="peso_kg" min="35" max="180" step="0.5" value="70">
+        </div>
+
+        <div class="field">
+          <div class="field-label">
+            <span>Altura</span>
+            <span class="val"><span id="val-altura_cm">170</span> cm</span>
+          </div>
+          <input type="range" id="altura_cm" min="130" max="210" step="1" value="170">
+          <div class="field-hint">IMC calculado automaticamente: <strong id="val-bmi">24.2</strong></div>
+        </div>
+
+        <div class="field">
+          <div class="field-label"><span>Condição de saúde mental</span></div>
+          <select id="mental_health_condition">
+            <option value="Healthy">Saudável</option>
+            <option value="Anxiety">Ansiedade</option>
+            <option value="Depression">Depressão</option>
+            <option value="Both">Ansiedade + Depressão</option>
+          </select>
+          <div class="field-hint">Selecione "Ansiedade", "Depressão" ou "Ansiedade + Depressão" apenas se você tiver diagnóstico confirmado. Caso contrário, mantenha "Saudável".</div>
+        </div>
+
+        <button type="submit" class="submit-btn" id="submit-btn">Calcular minha nota</button>
+        <p class="status-msg" id="status-msg"></p>
+      </form>
+    </section>
+
+    <!-- RESULT -->
+    <section class="panel">
+      <h3>Resultado</h3>
+      <p class="sub">Nota prevista e os fatores que mais pesaram para você.</p>
+
+      <div class="result-empty" id="result-empty">
+        <svg width="46" height="46" viewBox="0 0 46 46" fill="none">
+          <circle cx="23" cy="23" r="21" stroke="#5c6885" stroke-width="1.3" stroke-dasharray="3 5"/>
+          <path d="M23 13v10l7 4" stroke="#5c6885" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+        <p>Preencha o formulário e clique em “Calcular minha nota” para ver sua previsão aqui.</p>
+      </div>
+
+      <div class="gauge-wrap" id="gauge-wrap">
+        <svg width="220" height="130" viewBox="0 0 220 130">
+          <path d="M 14 116 A 96 96 0 0 1 206 116" stroke="rgba(255,255,255,0.08)" stroke-width="14" fill="none" stroke-linecap="round"/>
+          <path id="gauge-arc" d="M 14 116 A 96 96 0 0 1 206 116" stroke="#f5b942" stroke-width="14" fill="none" stroke-linecap="round"
+                stroke-dasharray="301.6" stroke-dashoffset="301.6"/>
+        </svg>
+        <div class="gauge-score" id="gauge-score">—</div>
+        <div class="gauge-caption">de 100 pontos previstos</div>
+
+        <div class="factors">
+          <h4>O que mais pesou para você</h4>
+          <div id="factors-list"></div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <footer>
+    <span>Modelo MLP (Keras) · dados de sono e desempenho cognitivo</span>
+    <span>Projeto de RNAs</span>
+  </footer>
+
+</div>
+
+<script>
+const ROTULOS_FALLBACK = {
+  sleep_duration_hrs: "Duração do sono",
+  exercise_day: "Exercício no dia anterior",
+  sleep_latency_mins: "Tempo para pegar no sono",
+  wake_episodes_per_night: "Despertares durante a noite",
+  alcohol_units_before_bed: "Álcool antes de dormir",
+  bmi: "IMC",
+  mental_health_condition: "Condição de saúde mental",
+};
+
+// Tradução PT-BR <-> valores esperados pelo modelo (mantidos em inglês, como no treino)
+const CONDICOES_SAUDE_MENTAL = [
+  { value: "Healthy", label: "Saudável" },
+  { value: "Anxiety", label: "Ansiedade" },
+  { value: "Depression", label: "Depressão" },
+  { value: "Both", label: "Ansiedade + Depressão" },
+];
+
+function popularCondicoesSaudeMental(categoriasBackend){
+  const select = document.getElementById('mental_health_condition');
+  const valorAtual = select.value;
+  const disponiveis = (categoriasBackend && categoriasBackend.length)
+    ? CONDICOES_SAUDE_MENTAL.filter(c => categoriasBackend.includes(c.value))
+    : CONDICOES_SAUDE_MENTAL;
+  const lista = disponiveis.length ? disponiveis : CONDICOES_SAUDE_MENTAL;
+
+  select.innerHTML = '';
+  lista.forEach(c => {
+    const opt = document.createElement('option');
+    opt.value = c.value;
+    opt.textContent = c.label;
+    select.appendChild(opt);
+  });
+  if (lista.some(c => c.value === valorAtual)) select.value = valorAtual;
+}
+
+// --- Cálculo automático de IMC (peso/altura) ---
+const pesoEl = document.getElementById('peso_kg');
+const alturaEl = document.getElementById('altura_cm');
+const valBmi = document.getElementById('val-bmi');
+let bmiValue = 24.2;
+let bmiRange = { min: 16, max: 45 };
+
+function recalcBmi(){
+  const peso = parseFloat(pesoEl.value);
+  const alturaM = parseFloat(alturaEl.value) / 100;
+  bmiValue = peso / (alturaM * alturaM);
+  valBmi.textContent = bmiValue.toFixed(1);
+}
+
+[pesoEl, alturaEl].forEach(el => {
+  el.addEventListener('input', () => {
+    const label = document.getElementById('val-' + el.id);
+    label.textContent = (el.id === 'altura_cm') ? parseInt(el.value) : parseFloat(el.value).toFixed(1);
+    updateSliderFill(el);
+    recalcBmi();
+  });
+});
+
+// --- Cálculo automático de unidades de álcool (tipo + ml) ---
+// Teor alcoólico aproximado por tipo de bebida e densidade do etanol (~0,789 g/ml).
+// 1 "unidade" ≈ 14g de álcool puro (referência usual: 1 lata de cerveja ≈ 1 taça de
+// vinho ≈ 1 dose de destilado ≈ 1 unidade).
+const TEOR_ALCOOLICO = { cerveja: 0.05, vinho: 0.12, destilado: 0.40 };
+const DENSIDADE_ETANOL = 0.789;
+const GRAMAS_POR_UNIDADE = 14;
+
+let alcoholDrank = 0;
+let alcoholType = 'cerveja';
+let alcoholUnits = 0;
+let alcoholRange = { min: 0, max: 6 };
+
+const alcoholMlEl = document.getElementById('alcohol_ml');
+const alcoholDetails = document.getElementById('alcohol-details');
+const valAlcoholUnits = document.getElementById('val-alcohol_units');
+
+function recalcAlcohol(){
+  if (!alcoholDrank){
+    alcoholUnits = 0;
+  } else {
+    const ml = parseFloat(alcoholMlEl.value) || 0;
+    const teor = TEOR_ALCOOLICO[alcoholType];
+    const gramasAlcool = ml * teor * DENSIDADE_ETANOL;
+    alcoholUnits = gramasAlcool / GRAMAS_POR_UNIDADE;
+  }
+  valAlcoholUnits.textContent = alcoholUnits.toFixed(1);
+}
+
+document.querySelectorAll('#alcohol_yn_toggle .toggle-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('#alcohol_yn_toggle .toggle-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    alcoholDrank = parseInt(btn.dataset.val);
+    alcoholDetails.style.display = alcoholDrank ? 'block' : 'none';
+    recalcAlcohol();
+  });
+});
+
+document.querySelectorAll('#alcohol_type_toggle .toggle-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('#alcohol_type_toggle .toggle-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    alcoholType = btn.dataset.val;
+    recalcAlcohol();
+  });
+});
+
+alcoholMlEl.addEventListener('input', () => {
+  document.getElementById('val-alcohol_ml').textContent = parseInt(alcoholMlEl.value);
+  updateSliderFill(alcoholMlEl);
+  recalcAlcohol();
+});
+
+const sliders = ["sleep_duration_hrs", "sleep_latency_mins", "wake_episodes_per_night"];
+
+function updateSliderFill(el){
+  const min = parseFloat(el.min), max = parseFloat(el.max), v = parseFloat(el.value);
+  const pct = ((v - min) / (max - min)) * 100;
+  el.style.setProperty('--fill', pct + '%');
+}
+
+sliders.forEach(id => {
+  const el = document.getElementById(id);
+  const label = document.getElementById('val-' + id);
+  el.addEventListener('input', () => {
+    label.textContent = (id === 'wake_episodes_per_night') ? parseInt(el.value) : parseFloat(el.value).toFixed(1);
+    updateSliderFill(el);
+  });
+  updateSliderFill(el);
+});
+
+// inicializa preenchimento visual e valores calculados dos novos campos
+updateSliderFill(pesoEl);
+updateSliderFill(alturaEl);
+recalcBmi();
+updateSliderFill(alcoholMlEl);
+recalcAlcohol();
+popularCondicoesSaudeMental();
+
+let exerciseVal = 0;
+document.querySelectorAll('#exercise_day_toggle .toggle-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('#exercise_day_toggle .toggle-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    exerciseVal = parseInt(btn.dataset.val);
+  });
+});
+
+const statusMsg = document.getElementById('status-msg');
+
+// carrega faixas reais + categorias do backend (se disponivel)
+fetch('/api/meta')
+  .then(r => r.ok ? r.json() : Promise.reject(r))
+  .then(meta => {
+    Object.entries(meta.faixas_numericas || {}).forEach(([id, faixa]) => {
+      // bmi e alcohol_units_before_bed não são mais sliders diretos (agora são
+      // calculados a partir de peso/altura e tipo/quantidade de bebida), então
+      // só guardamos a faixa válida para limitar o valor calculado antes de enviar.
+      if (id === 'bmi'){ bmiRange = { min: faixa.min, max: faixa.max }; return; }
+      if (id === 'alcohol_units_before_bed'){ alcoholRange = { min: faixa.min, max: faixa.max }; return; }
+
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.min = faixa.min;
+      el.max = faixa.max;
+      updateSliderFill(el);
+    });
+
+    popularCondicoesSaudeMental(meta.categorias_saude_mental);
+  })
+  .catch(() => {
+    statusMsg.textContent = 'Backend não respondeu em /api/meta — usando faixas padrão. Rode app.py com os artefatos do modelo para previsões reais.';
+    statusMsg.classList.add('show');
+  });
+
+const form = document.getElementById('predict-form');
+const submitBtn = document.getElementById('submit-btn');
+const resultEmpty = document.getElementById('result-empty');
+const gaugeWrap = document.getElementById('gauge-wrap');
+const gaugeArc = document.getElementById('gauge-arc');
+const gaugeScore = document.getElementById('gauge-score');
+const factorsList = document.getElementById('factors-list');
+
+const ARC_LENGTH = 301.6;
+
+function scoreColor(score){
+  if (score >= 70) return '#55d8c1';
+  if (score >= 40) return '#f5b942';
+  return '#f0705c';
+}
+
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  statusMsg.classList.remove('show');
+  submitBtn.disabled = true;
+  submitBtn.textContent = 'Calculando…';
+
+  // limita os valores calculados à faixa vista no treino do modelo, para não
+  // extrapolar (o valor exibido na tela continua sendo o calculado "de verdade")
+  const clamp = (v, r) => Math.min(r.max, Math.max(r.min, v));
+
+  const payload = {
+    sleep_duration_hrs: document.getElementById('sleep_duration_hrs').value,
+    exercise_day: exerciseVal,
+    sleep_latency_mins: document.getElementById('sleep_latency_mins').value,
+    wake_episodes_per_night: document.getElementById('wake_episodes_per_night').value,
+    alcohol_units_before_bed: clamp(alcoholUnits, alcoholRange).toFixed(2),
+    bmi: clamp(bmiValue, bmiRange).toFixed(2),
+    mental_health_condition: document.getElementById('mental_health_condition').value,
+  };
+
+  try {
+    const res = await fetch('/api/predict', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    const data = await res.json();
+
+    if (!res.ok) {
+      throw new Error(data.erro || 'Falha ao calcular a previsão.');
+    }
+
+    renderResult(data);
+  } catch (err) {
+    statusMsg.textContent = err.message || 'Erro ao conectar com o backend.';
+    statusMsg.classList.add('show');
+  } finally {
+    submitBtn.disabled = false;
+    submitBtn.textContent = 'Calcular minha nota';
+  }
+});
+
+function renderResult(data){
+  resultEmpty.style.display = 'none';
+  gaugeWrap.classList.add('show');
+
+  const score = Math.max(0, Math.min(100, data.nota_prevista));
+  const offset = ARC_LENGTH - (ARC_LENGTH * score / 100);
+  const color = scoreColor(score);
+
+  requestAnimationFrame(() => {
+    gaugeArc.style.stroke = color;
+    gaugeArc.style.transition = 'stroke-dashoffset .8s cubic-bezier(.22,1,.36,1)';
+    gaugeArc.style.strokeDashoffset = offset;
+  });
+
+  gaugeScore.textContent = score.toFixed(1);
+  gaugeScore.style.color = color;
+
+  factorsList.innerHTML = '';
+  const fatores = data.top_fatores || [];
+  const maxAbs = Math.max(...fatores.map(f => Math.abs(f.contribuicao)), 0.01);
+
+  fatores.forEach(f => {
+    const isPos = f.contribuicao >= 0;
+    const pct = Math.abs(f.contribuicao) / maxAbs * 100;
+    const rotulo = f.rotulo || ROTULOS_FALLBACK[f.variavel] || f.variavel;
+
+    const row = document.createElement('div');
+    row.className = 'factor-row';
+    row.innerHTML = `
+      <div class="factor-top">
+        <span class="name">${rotulo}</span>
+        <span class="amt ${isPos ? 'pos' : 'neg'}">${isPos ? '+' : ''}${f.contribuicao.toFixed(2)}</span>
+      </div>
+      <div class="factor-bar-track">
+        <div class="factor-bar-fill ${isPos ? 'pos' : 'neg'}"></div>
+      </div>
+    `;
+    factorsList.appendChild(row);
+    requestAnimationFrame(() => {
+      row.querySelector('.factor-bar-fill').style.width = pct + '%';
+    });
+  });
+}
+</script>
+</body>
+</html>
