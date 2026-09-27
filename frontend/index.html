@@ -364,6 +364,23 @@
   .factor-bar-fill.pos{ background: var(--teal); }
   .factor-bar-fill.neg{ background: var(--coral); }
 
+  .factors-legend{
+    margin-top: 22px;
+    padding-top: 18px;
+    border-top: 1px solid var(--border);
+  }
+
+  .factors-legend p{
+    margin: 0;
+    color: var(--text-muted);
+    font-size: 0.8rem;
+    line-height: 1.65;
+  }
+
+  .factors-legend strong{ color: var(--text); }
+  .legend-pos{ color: var(--teal); font-weight: 600; }
+  .legend-neg{ color: var(--coral); font-weight: 600; }
+
   footer{
     margin-top: 52px;
     padding-top: 22px;
@@ -387,10 +404,10 @@
         <path d="M22 11.5C20.6 10.3 18.9 9.6 17 9.6c-4.1 0-7.4 3.3-7.4 7.4s3.3 7.4 7.4 7.4c1.9 0 3.6-.7 5-1.9-1 .3-2 .5-3.1.5-3.9 0-7-3.1-7-7s3.1-7 7-7c1.1 0 2.1.2 3.1.5z" fill="#f5b942"/>
       </svg>
       <div>
-        <h1>Ciclo Certo</h1>
+        <h1>NoitBem</h1>
       </div>
     </div>
-    <p>Um MLP treinado sobre hábitos de sono, estima como sua noite influencia o desempenho cognitivo do dia seguinte.</p>
+    <p>Um MLP treinado sobre hábitos de sono estima como sua noite influencia o desempenho cognitivo do dia seguinte.</p>
   </header>
 
   <div class="hero">
@@ -521,6 +538,20 @@
         <div class="factors">
           <h4>O que mais pesou para você</h4>
           <div id="factors-list"></div>
+
+          <div class="factors-legend">
+            <p>
+              <strong>Como interpretar:</strong> a nota vai de 0 a 100 e representa o desempenho
+              cognitivo previsto para o dia seguinte, a partir do seu sono e hábitos recentes. Cada
+              fator acima mostra o quanto ele puxou sua nota <span class="legend-pos">para cima
+              (+)</span> ou <span class="legend-neg">para baixo (−)</span>, comparado a uma pessoa
+              "média" nos dados usados para treinar o modelo — não é uma regra fixa, é o efeito
+              estimado <em>para a sua combinação específica</em> de respostas. De modo geral, dormir
+              o suficiente, ter poucos despertares durante a noite e menos álcool antes de dormir
+              tendem a puxar a nota para cima; sono curto, muitos despertares e mais álcool tendem a
+              puxar para baixo.
+            </p>
+          </div>
         </div>
       </div>
     </section>
